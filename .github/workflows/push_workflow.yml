@@ -1,4 +1,5 @@
 name: Push workflow
+
 permissions: write-all
 on:
     push:

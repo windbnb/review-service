@@ -110,5 +110,5 @@ jobs:
                   OUTPUTS: ${{ toJson(steps.semantic.outputs) }}
               with:
                   push: true
-                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/windbnb-user-service:${{ steps.semantic.outputs.release-version }},${{ secrets.DOCKERHUB_USERNAME }}/windbnb-user-service:latest
-                  cache-from: ${{ secrets.DOCKERHUB_USERNAME }}/windbnb-user-service:latest
+                  tags: ${{ secrets.DOCKERHUB_USERNAME }}/windbnb-review-service:${{ steps.semantic.outputs.release-version }},${{ secrets.DOCKERHUB_USERNAME }}/windbnb-review-service:latest
+                  cache-from: ${{ secrets.DOCKERHUB_USERNAME }}/windbnb-review-service:latest

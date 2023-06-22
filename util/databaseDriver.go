@@ -26,5 +26,5 @@ func ConnectToMongoDatabase() *mongo.Database {
 		return nil
 	}
 
-	return client.Database("reservation_database")
+	return client.Database("reviews_database")
 }

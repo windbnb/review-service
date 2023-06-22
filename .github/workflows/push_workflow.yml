@@ -99,7 +99,7 @@ jobs:
               with:
                   branches: |
                       [
-                       'master'
+                       'master', 'feature-github-actions'
                       ]
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

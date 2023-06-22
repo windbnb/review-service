@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"errors"
 	"os"
 
 	"github.com/windbnb/review-service/model"
@@ -21,7 +22,15 @@ func (s *RatingService) SaveHostRating(hostRatingRequest *model.HostRatingReques
 
 	ctx = tracer.ContextWithSpan(context.Background(), span)
 
+	_, err := s.Repo.DeleteGuestHostRatings(hostRatingRequest.GuestId, hostRatingRequest.HostId, ctx)
+	if err != nil {
+		return nil, err
+	}
+
 	// Checks
+	if hostRatingRequest.Raiting < 1 || hostRatingRequest.Raiting > 5 {
+		return nil, errors.New("rating must be between 1 and 5")
+	}
 
 	// Get if had accomodation
 
@@ -35,11 +44,39 @@ func (s *RatingService) SaveHostRating(hostRatingRequest *model.HostRatingReques
 	return &hostRatingRequestData, nil
 }
 
+func (s *RatingService) SaveAccomodationRating(accomodationRatingRequest *model.AccomodationRatingRequest, ctx context.Context) (*model.AccomodationRating, error) {
+	span := tracer.StartSpanFromContext(ctx, "saveAccomodationRatingService")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
+	_, err := s.Repo.DeleteGuestAccomodationRatings(accomodationRatingRequest.GuestId, accomodationRatingRequest.AccomodationId, ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	// Checks
+	if accomodationRatingRequest.Raiting < 1 || accomodationRatingRequest.Raiting > 5 {
+		return nil, errors.New("rating must be between 1 and 5")
+	}
+
+	// Get if had accomodation
+
+	var accomodationRatingRequestData = model.AccomodationRating{
+		GuestId:        accomodationRatingRequest.GuestId,
+		AccomodationId: accomodationRatingRequest.AccomodationId,
+		Raiting:        accomodationRatingRequest.Raiting}
+
+	s.Repo.RateAccomodation(&accomodationRatingRequestData, ctx)
+
+	return &accomodationRatingRequestData, nil
+}
+
 func (s *RatingService) DummyService(ctx context.Context) (string, error) {
 	span := tracer.StartSpanFromContext(ctx, "saveHostRatingService")
 	defer span.Finish()
 
-	ctx = tracer.ContextWithSpan(context.Background(), span)
+	tracer.ContextWithSpan(context.Background(), span)
 
 	return "test radi", nil
 }

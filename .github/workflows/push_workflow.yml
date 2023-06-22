@@ -3,8 +3,8 @@ name: Push workflow
 permissions: write-all
 on:
     push:
-        # branches:
-        #     - master
+        branches:
+            - master
 
 jobs:
     build:
@@ -99,7 +99,7 @@ jobs:
               with:
                   branches: |
                       [
-                       'master', 'feature-github-actions'
+                       'master'
                       ]
               env:
                   GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

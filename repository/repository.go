@@ -87,6 +87,39 @@ func (r *Repository) RateHost(hostRating *model.HostRating, ctx context.Context)
 	return hostRating, nil
 }
 
+func (r *Repository) FindAllHostRatings(hostId uint, ctx context.Context) (*[]model.HostRating, error) {
+	span := tracer.StartSpanFromContext(ctx, "findAllHostRatingsRepository")
+	defer span.Finish()
+
+	hostRatings := []model.HostRating{}
+	dbCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	filter := bson.D{
+		{"hostId", hostId},
+	}
+
+	cursor, err := r.Db.Collection("host-ratings").Find(dbCtx, filter)
+	if err != nil {
+		tracer.LogError(span, err)
+		return nil, err
+	}
+
+	for cursor.Next(dbCtx) {
+		var hostRating model.HostRating
+		err := cursor.Decode(&hostRating)
+		if err != nil {
+			tracer.LogError(span, err)
+			continue
+		}
+
+		hostRatings = append(hostRatings, hostRating)
+	}
+
+	return &hostRatings, nil
+
+}
+
 func (r *Repository) FindGuestAccomodationRatings(guestId, accomodationId uint, ctx context.Context) (*[]model.AccomodationRating, error) {
 	span := tracer.StartSpanFromContext(ctx, "findGuestAccomodationRatingsRepository")
 	defer span.Finish()
@@ -157,4 +190,37 @@ func (r *Repository) RateAccomodation(accomodationRating *model.AccomodationRati
 	}
 
 	return accomodationRating, nil
+}
+
+func (r *Repository) FindAllAccomodationRatings(accomodationId uint, ctx context.Context) (*[]model.AccomodationRating, error) {
+	span := tracer.StartSpanFromContext(ctx, "findAllAccomodationRatingsRepository")
+	defer span.Finish()
+
+	accomodationsRatings := []model.AccomodationRating{}
+	dbCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	filter := bson.D{
+		{"accomodationId", accomodationId},
+	}
+
+	cursor, err := r.Db.Collection("accomodation-ratings").Find(dbCtx, filter)
+	if err != nil {
+		tracer.LogError(span, err)
+		return nil, err
+	}
+
+	for cursor.Next(dbCtx) {
+		var accomodationsRating model.AccomodationRating
+		err := cursor.Decode(&accomodationsRating)
+		if err != nil {
+			tracer.LogError(span, err)
+			continue
+		}
+
+		accomodationsRatings = append(accomodationsRatings, accomodationsRating)
+	}
+
+	return &accomodationsRatings, nil
+
 }

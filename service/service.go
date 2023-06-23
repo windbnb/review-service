@@ -28,7 +28,7 @@ func (s *RatingService) SaveHostRating(hostRatingRequest *model.HostRatingReques
 	}
 
 	// Checks
-	if hostRatingRequest.Raiting < 1 || hostRatingRequest.Raiting > 5 {
+	if hostRatingRequest.Rating < 1 || hostRatingRequest.Rating > 5 {
 		return nil, errors.New("rating must be between 1 and 5")
 	}
 
@@ -37,7 +37,7 @@ func (s *RatingService) SaveHostRating(hostRatingRequest *model.HostRatingReques
 	var hostRatingRequestData = model.HostRating{
 		GuestId: hostRatingRequest.GuestId,
 		HostId:  hostRatingRequest.HostId,
-		Raiting: hostRatingRequest.Raiting}
+		Raiting: hostRatingRequest.Rating}
 
 	s.Repo.RateHost(&hostRatingRequestData, ctx)
 
@@ -56,7 +56,7 @@ func (s *RatingService) SaveAccomodationRating(accomodationRatingRequest *model.
 	}
 
 	// Checks
-	if accomodationRatingRequest.Raiting < 1 || accomodationRatingRequest.Raiting > 5 {
+	if accomodationRatingRequest.Rating < 1 || accomodationRatingRequest.Rating > 5 {
 		return nil, errors.New("rating must be between 1 and 5")
 	}
 
@@ -65,7 +65,7 @@ func (s *RatingService) SaveAccomodationRating(accomodationRatingRequest *model.
 	var accomodationRatingRequestData = model.AccomodationRating{
 		GuestId:        accomodationRatingRequest.GuestId,
 		AccomodationId: accomodationRatingRequest.AccomodationId,
-		Raiting:        accomodationRatingRequest.Raiting}
+		Raiting:        accomodationRatingRequest.Rating}
 
 	s.Repo.RateAccomodation(&accomodationRatingRequestData, ctx)
 

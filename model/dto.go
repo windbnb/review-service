@@ -3,13 +3,13 @@ package model
 type HostRatingRequest struct {
 	GuestId uint
 	HostId  uint
-	Raiting uint
+	Rating  uint
 }
 
 type AccomodationRatingRequest struct {
 	GuestId        uint
 	AccomodationId uint
-	Raiting        uint
+	Rating         uint
 }
 
 type ErrorResponse struct {

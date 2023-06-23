@@ -117,27 +117,3 @@ func (handler *Handler) GetAccomodationAverageReview(w http.ResponseWriter, r *h
 	json.NewEncoder(w).Encode(accomodationRating)
 }
 
-func (handler *Handler) TestHandler(w http.ResponseWriter, r *http.Request) {
-	span := tracer.StartSpanFromRequest("hostRatingHandler", handler.Tracer, r)
-	defer span.Finish()
-	span.LogFields(
-		tracer.LogString("handler", fmt.Sprintf("handling login at %s\n", r.URL.Path)),
-	)
-
-	var hostRatingRequest model.HostRatingRequest
-	json.NewDecoder(r.Body).Decode(&hostRatingRequest)
-
-	// ctx := tracer.ContextWithSpan(context.Background(), span)
-	tracer.ContextWithSpan(context.Background(), span)
-	// token, err := handler.Service.Login(credentials, ctx)
-
-	w.Header().Set("Content-Type", "application/json")
-	// if err != nil {
-	// 	tracer.LogError(span, err)
-	// 	w.WriteHeader(http.StatusUnauthorized)
-	// 	json.NewEncoder(w).Encode(model.ErrorResponse{Message: err.Error(), StatusCode: http.StatusUnauthorized})
-	// 	return
-	// }
-
-	json.NewEncoder(w).Encode("test")
-}

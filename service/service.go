@@ -128,12 +128,3 @@ func (s *RatingService) GetAverageAccomodationRating(accomodationId uint, ctx co
 
 	return &result, nil
 }
-
-func (s *RatingService) DummyService(ctx context.Context) (string, error) {
-	span := tracer.StartSpanFromContext(ctx, "saveHostRatingService")
-	defer span.Finish()
-
-	tracer.ContextWithSpan(context.Background(), span)
-
-	return "test radi", nil
-}

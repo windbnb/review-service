@@ -94,17 +94,17 @@ func (handler *Handler) RateAccomodation(w http.ResponseWriter, r *http.Request)
 }
 
 func (handler *Handler) GetAccomodationAverageReview(w http.ResponseWriter, r *http.Request) {
-	span := tracer.StartSpanFromRequest("hostRatingHandler", handler.Tracer, r)
+	span := tracer.StartSpanFromRequest("accomodationAverageReviewHandler", handler.Tracer, r)
 	defer span.Finish()
 	span.LogFields(
 		tracer.LogString("handler", fmt.Sprintf("handling average accomodation at %s\n", r.URL.Path)),
 	)
 
 	params := mux.Vars(r)
-	hostId, _ := strconv.ParseUint(params["id"], 10, 32)
+	accomodationId, _ := strconv.ParseUint(params["id"], 10, 32)
 
 	ctx := tracer.ContextWithSpan(context.Background(), span)
-	hostRating, err := handler.Service.GetAverageHostRating(uint(hostId), ctx)
+	accomodationRating, err := handler.Service.GetAverageAccomodationRating(uint(accomodationId), ctx)
 
 	w.Header().Set("Content-Type", "application/json")
 	if err != nil {
@@ -114,7 +114,7 @@ func (handler *Handler) GetAccomodationAverageReview(w http.ResponseWriter, r *h
 		return
 	}
 
-	json.NewEncoder(w).Encode(hostRating)
+	json.NewEncoder(w).Encode(accomodationRating)
 }
 
 func (handler *Handler) TestHandler(w http.ResponseWriter, r *http.Request) {

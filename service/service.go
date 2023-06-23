@@ -101,12 +101,12 @@ func (s *RatingService) GetAverageHostRating(hostId uint, ctx context.Context) (
 }
 
 func (s *RatingService) GetAverageAccomodationRating(accomodationId uint, ctx context.Context) (*model.AccomodationAvgRating, error) {
-	span := tracer.StartSpanFromContext(ctx, "getAverageHostRatingService")
+	span := tracer.StartSpanFromContext(ctx, "getAverageAccomodationRatingService")
 	defer span.Finish()
 
 	ctx = tracer.ContextWithSpan(context.Background(), span)
 
-	ratings, err := s.Repo.FindAllHostRatings(uint(accomodationId), ctx)
+	ratings, err := s.Repo.FindAllAccomodationRatings(uint(accomodationId), ctx)
 	if err != nil {
 		return nil, err
 	}

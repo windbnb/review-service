@@ -72,11 +72,59 @@ func (s *RatingService) SaveAccomodationRating(accomodationRatingRequest *model.
 	return &accomodationRatingRequestData, nil
 }
 
-func (s *RatingService) DummyService(ctx context.Context) (string, error) {
-	span := tracer.StartSpanFromContext(ctx, "saveHostRatingService")
+func (s *RatingService) GetAverageHostRating(hostId uint, ctx context.Context) (*model.HostAvgRating, error) {
+	span := tracer.StartSpanFromContext(ctx, "getAverageHostRatingService")
 	defer span.Finish()
 
-	tracer.ContextWithSpan(context.Background(), span)
+	ctx = tracer.ContextWithSpan(context.Background(), span)
 
-	return "test radi", nil
+	ratings, err := s.Repo.FindAllHostRatings(uint(hostId), ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var avgRating float32 = 0
+	for _, rating := range *ratings {
+		avgRating += float32(rating.Raiting)
+	}
+
+	if len(*ratings) > 0 {
+		avgRating /= float32(len(*ratings))
+	}
+
+	var result = model.HostAvgRating{
+		HostId:         uint(hostId),
+		AverageRaiting: avgRating,
+	}
+
+	return &result, nil
+}
+
+func (s *RatingService) GetAverageAccomodationRating(accomodationId uint, ctx context.Context) (*model.AccomodationAvgRating, error) {
+	span := tracer.StartSpanFromContext(ctx, "getAverageAccomodationRatingService")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
+	ratings, err := s.Repo.FindAllAccomodationRatings(uint(accomodationId), ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	var avgRating float32 = 0
+	for _, rating := range *ratings {
+		avgRating += float32(rating.Raiting)
+
+	}
+
+	if len(*ratings) > 0 {
+		avgRating /= float32(len(*ratings))
+	}
+
+	var result = model.AccomodationAvgRating{
+		AccomodationId: uint(accomodationId),
+		AverageRaiting: avgRating,
+	}
+
+	return &result, nil
 }

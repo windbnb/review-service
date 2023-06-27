@@ -3,7 +3,7 @@ version: "3"
 x-logging: &fluent-bit
     driver: fluentd
     options:
-        fluentd-address:  172.21.0.2:24224
+        fluentd-address:  172.18.0.8:24224
 
 services:
   review-database:
@@ -30,9 +30,8 @@ services:
       - monitoring
     container_name: review-service
     environment:
-      DATABASE_USER: postgres
-      DATABASE_PASSWORD: root
-      SERVICE_PATH:  0.0.0.0:8082
+      DATABASE_CONNECTION_STRING: mongodb://user:pass@review-database:27017
+      SERVICE_PATH:  0.0.0.0:8084
       JAEGER_SERVICE_NAME: review-service
       JAEGER_AGENT_HOST: jaeger
       JAEGER_AGENT_PORT: 6831
@@ -40,14 +39,11 @@ services:
       JAEGER_SAMPLER_TYPE: const
       JAEGER_SAMPLER_PARAM: 1
     ports:
-      - "8082:8082"
+      - "8084:8084"
     logging: *fluent-bit
     depends_on:
-      review-database:
-        condition: service_healthy
-
-volumes:
-  review-data:
+      - review-database
+      # condition: service_healthy
 
 networks:
   servers:

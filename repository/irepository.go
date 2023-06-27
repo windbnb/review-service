@@ -16,4 +16,5 @@ type IRepository interface {
 	DeleteGuestAccomodationRatings(guestId, accomodationId uint, ctx context.Context) (int64, error)
 	RateAccomodation(accomodationRating *model.AccomodationRating, ctx context.Context) (*model.AccomodationRating, error)
 	FindAllAccomodationRatings(accomodationId uint, ctx context.Context) (*[]model.AccomodationRating, error)
+	GetGuestAccomodationRating(guestId, hostId uint, ctx context.Context) *model.AccomodationRating
 }

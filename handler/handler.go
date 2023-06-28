@@ -117,3 +117,27 @@ func (handler *Handler) GetAccomodationAverageReview(w http.ResponseWriter, r *h
 	json.NewEncoder(w).Encode(accomodationRating)
 }
 
+func (handler *Handler) GetReviewByGuestAndAccomodation(w http.ResponseWriter, r *http.Request) {
+	span := tracer.StartSpanFromRequest("getReviewByGuestAndAccomodationHandler", handler.Tracer, r)
+	defer span.Finish()
+	span.LogFields(
+		tracer.LogString("handler", fmt.Sprintf("handling get review by guest for accomodation at %s\n", r.URL.Path)),
+	)
+
+	params := mux.Vars(r)
+	accomodationId, _ := strconv.ParseUint(params["accomodationId"], 10, 32)
+	guestId, _ := strconv.ParseUint(params["guestId"], 10, 32)
+
+	ctx := tracer.ContextWithSpan(context.Background(), span)
+	accomodationRating, err := handler.Service.GetReviewByGuestAndAccomodation(uint(accomodationId), uint(guestId), ctx)
+
+	w.Header().Set("Content-Type", "application/json")
+	if err != nil {
+		tracer.LogError(span, err)
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(model.ErrorResponse{Message: err.Error(), StatusCode: http.StatusUnauthorized})
+		return
+	}
+
+	json.NewEncoder(w).Encode(accomodationRating)
+}

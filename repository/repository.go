@@ -224,3 +224,26 @@ func (r *Repository) FindAllAccomodationRatings(accomodationId uint, ctx context
 	return &accomodationsRatings, nil
 
 }
+
+func (r *Repository) GetGuestAccomodationRating(guestId, accomodationId uint, ctx context.Context) *model.AccomodationRating {
+	span := tracer.StartSpanFromContext(ctx, "getGuestHostRatingsRepository")
+	defer span.Finish()
+
+	dbCtx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	filter := bson.D{
+		{"guestId", guestId},
+		{"accomodationId", accomodationId},
+	}
+
+	var accomodationRating model.AccomodationRating
+	err := r.Db.Collection("accomodation-ratings").FindOne(dbCtx, filter).Decode(&accomodationRating)
+	if err != nil {
+		tracer.LogError(span, err)
+		return nil
+	}
+
+	return &accomodationRating
+
+}

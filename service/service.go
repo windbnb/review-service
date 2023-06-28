@@ -128,3 +128,14 @@ func (s *RatingService) GetAverageAccomodationRating(accomodationId uint, ctx co
 
 	return &result, nil
 }
+
+func (s *RatingService) GetReviewByGuestAndAccomodation(accomodationId uint, guestId uint, ctx context.Context) (*model.AccomodationRating, error) {
+	span := tracer.StartSpanFromContext(ctx, "getReviewByGuestAndAccomodationService")
+	defer span.Finish()
+
+	ctx = tracer.ContextWithSpan(context.Background(), span)
+
+	rating := s.Repo.GetGuestAccomodationRating(uint(guestId), uint(accomodationId), ctx)
+
+	return rating, nil
+}

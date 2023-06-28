@@ -234,7 +234,7 @@ func (r *Repository) GetGuestAccomodationRating(guestId, accomodationId uint, ct
 
 	filter := bson.D{
 		{"guestId", guestId},
-		{"accomodationIdId", accomodationId},
+		{"accomodationId", accomodationId},
 	}
 
 	var accomodationRating model.AccomodationRating

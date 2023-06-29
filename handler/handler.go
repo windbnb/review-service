@@ -21,6 +21,14 @@ type Handler struct {
 	Closer  io.Closer
 }
 
+func (handler *Handler) Healthcheck(w http.ResponseWriter, _ *http.Request) {
+    _, _ = fmt.Fprintln(w, "Healthy!")
+}
+
+func (handler *Handler) Ready(w http.ResponseWriter, _ *http.Request) {
+    _, _ = fmt.Fprintln(w, "Ready!")
+}
+
 func (handler *Handler) RateHost(w http.ResponseWriter, r *http.Request) {
 	span := tracer.StartSpanFromRequest("hostRatingHandler", handler.Tracer, r)
 	defer span.Finish()
